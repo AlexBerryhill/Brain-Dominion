@@ -22,12 +22,6 @@ import math
 
 import pygame
 
-class Board:
-        def __init__(self, width, height):
-                self.width = width
-                self.height = height
-                self.board = [[0 for x in range(width)] for y in range(height)]
-
 if __name__ == "__main__":
 
         # """ Open Serial port to Arduino """
