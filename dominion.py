@@ -1,6 +1,7 @@
 import pygame
 import random
 import io
+import json
 import urllib.request
 # https://www.ultraboardgames.com/dominion/gfx/<card_name>.jpg
 # Initialize Pygame
@@ -97,15 +98,22 @@ class Player:
 player1 = Player("Player 1")
 player2 = Player("Player 2")
 game = [player1, player2]
-cards = [
-    DominionCard("Copper", 0, "Treasure"),
-    DominionCard("Silver", 3, "Treasure"),
-    DominionCard("Gold", 6, "Treasure"),
-    DominionCard("Estate", 2, "Victory"),
-    DominionCard("Duchy", 5, "Victory"),
-    DominionCard("Province", 8, "Victory"),
-    # Add more cards...
-]
+cards = []
+# cards = [
+#     DominionCard("Copper", 0, "Treasure"),
+#     DominionCard("Silver", 3, "Treasure"),
+#     DominionCard("Gold", 6, "Treasure"),
+#     DominionCard("Estate", 2, "Victory"),
+#     DominionCard("Duchy", 5, "Victory"),
+#     DominionCard("Province", 8, "Victory"),
+#     # Add more cards...
+# ]
+with open('assets/cards.json') as file:
+    cards_file = json.load(file)
+    for card in cards_file['Dominion']:
+        print(card['name'])
+        cards.append(DominionCard(card['name'],card['cost_treasure'],card['type']))
+
 
 # Set up initial player decks
 for player in game:
