@@ -1,8 +1,7 @@
 import pygame
 import random
-import io
 import json
-import urllib.request
+
 # https://www.ultraboardgames.com/dominion/gfx/<card_name>.jpg
 # Initialize Pygame
 pygame.init()
@@ -49,18 +48,18 @@ class DominionCard:
         self.rect.topleft = (x, y)
         surface.blit(self.image, self.rect)
 
-# Define Player class
 class Player:
     def __init__(self):
         self.deck = []
         self.hand = []
         self.discard_pile = []
         self.initialize_deck()
+        self.draw_cards(5)  # Draw 5 cards at the start of the game
 
     def initialize_deck(self):
         # Add starting cards to the deck
-        starting_deck = ["Copper"] * 7 + ["Estate"] * 3
-        self.deck = [DominionCard(card_name, 0, "") for card_name in starting_deck]
+        self.deck = [DominionCard("Copper", 0, "Treasure") for _ in range(7)]
+        self.deck += [DominionCard("Estate", 2, "Victory") for _ in range(3)]
         random.shuffle(self.deck)
 
     def draw_cards(self, num_cards):
