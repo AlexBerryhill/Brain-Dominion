@@ -141,8 +141,8 @@ while running:
                             current_player.draw_card(card)
                             supply[card] -= 1
 
-    # Clear the screen
-    window.fill(GRAY)
+    # # Clear the screen
+    # window.fill(GRAY)
 
     # Draw supply stacks
     supply_x = WINDOW_WIDTH - CARD_MARGIN - CARD_WIDTH
