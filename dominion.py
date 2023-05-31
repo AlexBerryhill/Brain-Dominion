@@ -78,6 +78,9 @@ class Player:
                 self.hand.append(card)
                 supply.remove(card)
 
+    def draw_card(self,card):
+        self.discard.append(card)
+
     def play_card(self, index):
         if index >= 0 and index < len(self.hand):
             return self.hand.pop(index)
