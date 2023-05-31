@@ -1,24 +1,16 @@
 import pygame
 import random
-import io
-import urllib.request
-# https://www.ultraboardgames.com/dominion/gfx/<card_name>.jpg
-# Initialize Pygame
-pygame.init()
 
-# Define colors
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-GRAY = (128, 128, 128)
-
-# Define card dimensions
-CARD_WIDTH = 100
-CARD_HEIGHT = 150
-CARD_MARGIN = 20
-
-# Set up the game window
+# Constants
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
+CARD_WIDTH = 100
+CARD_HEIGHT = 150
+CARD_MARGIN = 10
+GRAY = (200, 200, 200)
+
+# Initialize pygame
+pygame.init()
 window = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 pygame.display.set_caption("Dominion")
 
@@ -35,84 +27,66 @@ class DominionCard:
         return self.name
 
     def load_image(self):
-        image_url = f"https://www.ultraboardgames.com/dominion/gfx/{self.name}.jpg"
+        image_path = f"assets/img/{self.name}.webp"
         try:
-            print(f"Loading image for {self.name} at {image_url}")
-            with urllib.request.urlopen(image_url) as url:
-                print(f"Image loaded for {self.name}")
-                image_data = url.read()
-                image_stream = io.BytesIO(image_data)
-                image = pygame.image.load(image_stream).convert()
-                image = pygame.transform.scale(image, (CARD_WIDTH, CARD_HEIGHT))
-                return image
-        except:
-            print(f"Error loading image for {self.name}:", flush=True)
+            image = pygame.image.load(image_path).convert_alpha()
+            image = pygame.transform.scale(image, (CARD_WIDTH, CARD_HEIGHT))
+            return image
+        except pygame.error:
             # If image loading fails, create a placeholder image
             image = pygame.Surface((CARD_WIDTH, CARD_HEIGHT))
-            image.fill(WHITE)
-            pygame.draw.rect(image, BLACK, image.get_rect(), 3)
+            image.fill(GRAY)
+            pygame.draw.rect(image, (0, 0, 0), image.get_rect(), 3)
             return image
 
     def draw(self, surface, x, y):
         self.rect.topleft = (x, y)
-        surface.blit(self.image, self.rect.topleft)
-
-
+        surface.blit(self.image, self.rect)
 
 # Define Player class
 class Player:
-    def __init__(self, name):
-        self.name = name
-        self.hand = []
+    def __init__(self):
         self.deck = []
-        self.discard = []
-
-    def draw_cards(self, num_cards, supply):
-        for _ in range(num_cards):
-            if not self.deck:
-                self.deck = self.discard
-                self.discard = []
-                random.shuffle(self.deck)
-            if self.deck and supply:
-                card = random.choice(list(supply))
-                self.hand.append(card)
-                supply.remove(card)
-
-    def play_card(self, index):
-        if index >= 0 and index < len(self.hand):
-            return self.hand.pop(index)
-
-    def end_turn(self):
-        self.discard.extend(self.hand)
         self.hand = []
+        self.discard_pile = []
+        self.initialize_deck()
 
-    def __str__(self):
-        return self.name
+    def initialize_deck(self):
+        # Add starting cards to the deck
+        starting_deck = ["Copper"] * 7 + ["Estate"] * 3
+        self.deck = [DominionCard(card_name, 0, "") for card_name in starting_deck]
+        random.shuffle(self.deck)
 
+    def draw_cards(self, num_cards):
+        # Draw a specified number of cards from the deck
+        for _ in range(num_cards):
+            if len(self.deck) == 0:
+                # If the deck is empty, shuffle the discard pile and add it to the deck
+                self.deck = self.discard_pile
+                self.discard_pile = []
+                random.shuffle(self.deck)
+            if len(self.deck) > 0:
+                card = self.deck.pop()
+                self.hand.append(card)
+
+    def draw_card(self, card):
+        # Add a card to the player's hand
+        self.hand.append(card)
 
 # Initialize game objects
-player1 = Player("Player 1")
-player2 = Player("Player 2")
-game = [player1, player2]
+num_players = 2
+players = [Player() for _ in range(num_players)]
+
 cards = [
     DominionCard("Copper", 0, "Treasure"),
     DominionCard("Silver", 3, "Treasure"),
     DominionCard("Gold", 6, "Treasure"),
     DominionCard("Estate", 2, "Victory"),
     DominionCard("Duchy", 5, "Victory"),
-    DominionCard("Province", 8, "Victory"),
+    DominionCard("Province", 8, "Victory")
     # Add more cards...
 ]
 
-# Set up initial player decks
-for player in game:
-    for _ in range(7):
-        player.deck.append(cards[0])  # Copper
-    for _ in range(3):
-        player.deck.append(cards[4])  # Estate
-    random.shuffle(player.deck)
-
-# Set up the supply stacks
 supply = {
     cards[0]: 60,  # Copper
     cards[1]: 40,  # Silver
@@ -123,13 +97,22 @@ supply = {
     # Add more cards...
 }
 
-# Each player draws 5 cards
-for player in game:
-    player.draw_cards(5, list(supply.keys()))
+# Load background image
+background_image = pygame.image.load("./assets/background.jpg")
+background_image = pygame.transform.scale(background_image, (WINDOW_WIDTH, WINDOW_HEIGHT))
 
 # Game loop
 running = True
+current_player_index = 0  # Set the initial current player index
+
 while running:
+    # Draw the background image
+    window.blit(background_image, (0, 0))
+
+    # Starting turn
+    current_player = players[current_player_index]
+    current_player.draw_cards(5)
+
     # Handle events
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -138,11 +121,11 @@ while running:
             if event.button == 1:  # Left mouse button
                 mouse_pos = pygame.mouse.get_pos()
                 # Check if the player clicked on a supply stack
-                for i, card in enumerate(supply):
+                for card in supply.keys():
                     if card.rect.collidepoint(mouse_pos):
                         # Draw a card from the selected supply pile
                         if supply[card] > 0:
-                            player.draw_card(card)
+                            current_player.draw_card(card)
                             supply[card] -= 1
 
     # Clear the screen
@@ -155,7 +138,7 @@ while running:
         card.draw(window, supply_x, supply_y + i * (CARD_HEIGHT + CARD_MARGIN))
 
     # Draw player hands
-    for i, player in enumerate(game):
+    for i, player in enumerate(players):
         for j, card in enumerate(player.hand):
             card_x = CARD_MARGIN + (CARD_WIDTH + CARD_MARGIN) * j
             card_y = WINDOW_HEIGHT - CARD_MARGIN - CARD_HEIGHT - (CARD_HEIGHT + CARD_MARGIN) * i
