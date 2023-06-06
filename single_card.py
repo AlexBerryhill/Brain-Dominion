@@ -3,6 +3,7 @@ class Single_card():
     def __init__(self,card) -> None:
         self.card = card
         self.rect = copy.copy(card.rect)
+        self.highlighted = False
     
     def draw(self, surface, x, y):
         self.rect.topleft = (x, y)

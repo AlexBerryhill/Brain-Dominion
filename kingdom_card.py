@@ -46,9 +46,3 @@ class Kingdom_card(Card):
                     other.deck.append(other.hand.pop(remove_i))
                     for card in other.hand:
                         print(card)
-            
-
-
-                
-
-    

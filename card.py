@@ -16,6 +16,7 @@ class Card:
         self.special_action = False
         self.rect = pygame.Rect(0, 0, CARD_WIDTH, CARD_HEIGHT)
         self.image = self.load_image()
+        self.highlighted = False
 
     def __str__(self):
         return self.name
@@ -35,7 +36,14 @@ class Card:
 
     def draw_stack(self, surface, x, y):
         self.rect.topleft = (x, y)
-        surface.blit(self.image, self.rect)
+        if self.highlighted:
+            # Increase the size of the card when hovered
+            enlarged_width = int(CARD_WIDTH * 1.2)
+            enlarged_height = int(CARD_HEIGHT * 1.2)
+            enlarged_rect = pygame.Rect(x - (enlarged_width - CARD_WIDTH) // 2, y - (enlarged_height - CARD_HEIGHT) // 2, enlarged_width, enlarged_height)
+            surface.blit(pygame.transform.scale(self.image, (enlarged_width, enlarged_height)), enlarged_rect)
+        else:
+            surface.blit(self.image, self.rect)
 
     def play(self,player):
         print(f"You ({player}) have {player.actions} action, {player.buys} buy, and {player.treasure} treasure")
