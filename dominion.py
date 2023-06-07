@@ -51,8 +51,8 @@ def setup_game_cards():
 
     #TEMPORARY CODE FOR DEBUGGING NEW KINGDOM CARD CODE
     if DEBUG:
-        game_cards.append(cards[8])
-        used_cards.append(cards[8])
+        game_cards.append(cards[13])
+        used_cards.append(cards[13])
 
     for _ in range(10 if DEBUG else 11):
         card_i = 0
