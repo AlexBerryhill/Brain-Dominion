@@ -47,9 +47,9 @@ class Card:
 
     def play(self,player):
         print(f"You ({player}) have {player.actions} action, {player.buys} buy, and {player.treasure} treasure")
-        player.discard_pile.append(Single_card(self))
-        remove_index = 0
+        remove_index = -1
         for i,card in enumerate(player.hand):
             if card.card == self:
                 remove_index = i
-        player.hand.pop(remove_index)
+        if remove_index != -1: 
+            player.discard_pile.append(player.hand.pop(remove_index))

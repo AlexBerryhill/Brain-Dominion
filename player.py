@@ -8,6 +8,7 @@ class Player:
         self.buys = 1
         self.actions = 1
         self.treasure = 0
+        self.feast_money = 0
         self.initialize_deck(cards)
         self.draw_cards(5)  # Draw 5 cards at the start of the game
 
@@ -29,6 +30,9 @@ class Player:
                 card = self.deck.pop()
                 self.hand.append(card)
     
+    def print_hand(self):
+        for card in self.hand:
+            print(card)
     def start_turn(self):
         self.buys = 1
         self.actions = 1
@@ -40,7 +44,12 @@ class Player:
         self.draw_cards(5)
     
     def buy_card(self,card):
-        print(card)
+
+        if self.feast_money >= card.cost:
+            self.discard_pile.append(Single_card(card))
+            print("successfully bought",card)
+            self.feast_money = 0
+            return
         if self.buys > 0 and self.treasure >= card.cost:
             self.buys -= 1
             self.treasure -= card.cost
