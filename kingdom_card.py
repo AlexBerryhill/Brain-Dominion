@@ -108,9 +108,6 @@ class Kingdom_card(Card):
                         break
                 if remove_i > -1:
                     other.deck.append(other.hand.pop(remove_i))
-            
 
-
-                
-
-    
+                    for card in other.hand:
+                        print(card)
