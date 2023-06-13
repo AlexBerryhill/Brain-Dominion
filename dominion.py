@@ -216,6 +216,8 @@ while running:
                     card.highlighted = True
                     pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
                     break
+                else:
+                    card.highlighted = False
             # Check if hovering over supply decks
             else:
                 supply_x = CARD_MARGIN
