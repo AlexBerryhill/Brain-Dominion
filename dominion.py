@@ -145,8 +145,8 @@ def setup_game_cards():
 
     #TEMPORARY CODE FOR DEBUGGING NEW KINGDOM CARD CODE
     if DEBUG:
-        game_cards.append(cards[13])
-        used_cards.append(cards[13])
+        game_cards.append(cards[9])
+        used_cards.append(cards[9])
 
     for _ in range(10 if DEBUG else 11):
         card_i = 0
@@ -205,6 +205,9 @@ while running:
             mouse_pos = pygame.mouse.get_pos()
             # Reset highlights
             for card in cards:
+                card.highlighted = False
+            
+            for card in current_player.hand:
                 card.highlighted = False
 
             # Check if hovering over player's hand cards

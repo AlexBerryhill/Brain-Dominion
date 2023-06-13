@@ -11,6 +11,7 @@ class Card:
         self.type = type
         self.id = id
         self.worth = 0
+    
         self.victory_points = 0
         self.starting_amount = starting_amount
         self.special_action = False
@@ -22,12 +23,16 @@ class Card:
         return self.name
 
     def load_image(self):
-        image_path = f"assets/img/{self.name}.webp"
         try:
+            image_path = f"assets/img/{self.name}.jpg"
             image = pygame.image.load(image_path).convert_alpha()
-            image = pygame.transform.scale(image, (CARD_WIDTH, CARD_HEIGHT))
+            enlarged_width = int(CARD_WIDTH * 1.2)
+            enlarged_height = int(CARD_HEIGHT * 1.2)
+            self.big_image = pygame.transform.smoothscale(image, (enlarged_width, enlarged_height))
+            image = pygame.transform.smoothscale(image, (CARD_WIDTH, CARD_HEIGHT))
+            
             return image
-        except pygame.error:
+        except (pygame.error, FileNotFoundError):
             # If image loading fails, create a placeholder image
             image = pygame.Surface((CARD_WIDTH, CARD_HEIGHT))
             image.fill(GRAY)
@@ -41,7 +46,7 @@ class Card:
             enlarged_width = int(CARD_WIDTH * 1.2)
             enlarged_height = int(CARD_HEIGHT * 1.2)
             enlarged_rect = pygame.Rect(x - (enlarged_width - CARD_WIDTH) // 2, y - (enlarged_height - CARD_HEIGHT) // 2, enlarged_width, enlarged_height)
-            surface.blit(pygame.transform.scale(self.image, (enlarged_width, enlarged_height)), enlarged_rect)
+            surface.blit(self.big_image, enlarged_rect)
         else:
             surface.blit(self.image, self.rect)
 

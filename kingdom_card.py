@@ -41,7 +41,6 @@ class Kingdom_card(Card):
                     case 17:
                         pass
                     case 19:
-                        
                         for other in players:
                             if other != player:
                                 other.hand = other.hand[:3]
@@ -63,7 +62,8 @@ class Kingdom_card(Card):
                         for other in players:
                             if other != player:
                                 other.deck.insert(Single_card(cards[6]),0)
-
+                    case 31:
+                        player.feast_money = 4
                     case _:
                         print("do special action")
             super().play(player)
