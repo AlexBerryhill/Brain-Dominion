@@ -20,7 +20,36 @@ import time
 import auxiliary_tools as BCIw  # Our own functions for the workshop
 import math
 
-import pygame
+import pyautogui
+
+class Mouse():
+        # Mouse class to control mouse movement and clicks
+        def __init__(self) -> None:
+                self.x, self.y = pyautogui.position()
+                self.delta = 20
+                self.duration = 0.85 # seconds
+        
+        def click(self):
+                pyautogui.click(self.x, self.y)
+        
+        # def _move(self):
+        #         pyautogui.moveTo(self.x, self.y, duration=0.85)
+        
+        def move_up(self):
+                self.y -= self.delta
+                pyautogui.moveRel(0, -self.delta, duration=self.duration)
+        
+        def move_down(self):
+                self.y += self.delta
+                pyautogui.moveRel(0, self.delta, duration=self.duration)
+        
+        def move_left(self):
+                self.x -= self.delta
+                pyautogui.moveRel(-self.delta, 0, duration=self.duration)
+        
+        def move_right(self):
+                self.x += self.delta
+                pyautogui.moveRel(self.delta, 0, duration=self.duration)
 
 if __name__ == "__main__":
 
@@ -82,13 +111,13 @@ if __name__ == "__main__":
 
         # Length of the EEG data buffer (in seconds)
         # This buffer will hold last n seconds of data and be used for calculations
-        buffer_length = 15
+        buffer_length = 7
 
         # Length of the epochs used to compute the FFT (in seconds)
-        epoch_length = 2
+        epoch_length = 1
 
         # Amount of overlap between two consecutive epochs (in seconds)
-        overlap_length = 0.8
+        overlap_length = 0.4
 
         # Amount to 'shift' the start of each next consecutive epoch
         shift_length = epoch_length - overlap_length
@@ -155,6 +184,7 @@ if __name__ == "__main__":
         print('Press Ctrl-C in the console to break the while loop.')
 
         try:
+                mouse = Mouse()
                 position = [0,0,0]
                 while True:
 
@@ -191,22 +221,29 @@ if __name__ == "__main__":
                         gyro_data = vec_dead_zone(gyro_data)
                         
                         position += gyro_data.mean(axis=0)
+                        if(y_hat == 0):
+                                # arduino.write(str.encode('0'))
+                                print('0')
+                        else:
+                                print('1')
+                                # mouse.click()
+
                         print(position.round(0))
                         # print(gyro_data.mean(axis=0))
                         axis = 2
                         if (position[axis] > 30 or position[axis] < -30):
                                 position = [0, 0, 0]
-                        elif (position[axis] > 10):
-                                print('left')
-                        elif (position[axis] < -10):
-                                print('right')
-                        else:
-                                print('center')
-                        print(y_hat)
-                        # if(y_hat == 0):
-                        #         arduino.write(str.encode('0'))
-                        # else:
-                        #         arduino.write(str.encode('1'))
+                        elif (position[axis] > 10): #left
+                                # arduino.write(str.encode('l')) #letter L
+                                mouse.move_left()
+                                print('l')
+                        elif (position[axis] < -10): # right
+                                # arduino.write(str.encode('r'))
+                                mouse.move_right()
+                                print('r')
+                        # else: #center
+                        #         # arduino.write(str.encode('c'))
+                        #         print('1')
 
                         decision_buffer, _ = BCIw.update_buffer(decision_buffer,
                                                                 np.reshape(y_hat, (-1, 1)))
