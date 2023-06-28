@@ -1,9 +1,10 @@
 import random
 from single_card import Single_card
 class Player:
-    def __init__(self,cards):
+    def __init__(self,cards,name):
         self.deck = []
         self.hand = []
+        self.name = name
         self.discard_pile = []
         self.buys = 1
         self.actions = 1
@@ -53,11 +54,13 @@ class Player:
         self.buys = 1
         self.actions = 1
         self.treasure = 0
+        
 
     def end_turn(self):
         self.discard_pile.extend(self.hand)
         self.hand = []
         self.draw_cards(5)
+        self.deactivate_selection_mode()
     
     def activate_selection_mode(self,function,uses = -1,valid_card_types=["Treasure","Kingdom","Victory"]):
         self.valid_card_selection_types =valid_card_types

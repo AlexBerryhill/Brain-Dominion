@@ -65,9 +65,10 @@ class Kingdom_card(Card):
                         case 27:
                             player.activate_selection_mode(self.throne_room,1,["Kingdom"])
                         case 29:
-                            for other in players:
-                                if other != player:
-                                    other.deck.insert(Single_card(cards[6]),0)
+                            self.attack(lambda other,cards:other.deck.insert(0,Single_card(cards[6])),player,players,cards)
+                            # for other in players:
+                            #     if other != player:
+                            #         other.deck.insert(0,Single_card(cards[6]))
                         case 31:
                             player.feast_money = 4
                         case _:
@@ -84,7 +85,7 @@ class Kingdom_card(Card):
                 else:
                     break
     
-    def militia(self,other):
+    def militia(self,other,cards):
         other.hand = other.hand[:3]
     def cellar(self,player,card,players,cards):
         player.discard_card(card)
@@ -128,10 +129,10 @@ class Kingdom_card(Card):
     def attack(self,function,player,players,cards):
         for other in players:
             if other != player and other.discard_card(cards[21]):
-                function(other)
+                function(other,cards)
                 print(other.hand)
 
-    def discard_victory_card(self,other):
+    def discard_victory_card(self,other,cards):
         remove_i = -1
         for i,card in enumerate(other.hand):
             if card.card.type == 'Victory':

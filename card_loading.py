@@ -3,7 +3,7 @@ from victory_card import Victory_card
 from kingdom_card import Kingdom_card
 import json
 import random
-DEBUG = True
+from constants import DEBUG
 def load_cards():
     '''Using the cards.json file, returns a list of all the cards in the dominion game as objects.'''
     cards = []
@@ -27,8 +27,8 @@ def setup_game_cards(cards):
 
     #TEMPORARY CODE FOR DEBUGGING NEW KINGDOM CARD CODE
     if DEBUG:
-        game_cards.append(cards[8])
-        used_cards.append(cards[8])
+        game_cards.append(cards[29])
+        used_cards.append(cards[29])
 
     for _ in range(10 if DEBUG else 11):
         card_i = 0

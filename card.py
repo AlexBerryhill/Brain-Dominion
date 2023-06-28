@@ -1,10 +1,7 @@
 import pygame
 from single_card import Single_card
 from player import Player
-GRAY = (200, 200, 200)
-CARD_WIDTH = 100
-CARD_HEIGHT = 150
-CARD_MARGIN = 10
+from constants import GRAY,CARD_HEIGHT,CARD_WIDTH
 class Card:
     def __init__(self, name, cost, type,id,starting_amount):
         self.name = name
@@ -60,9 +57,3 @@ class Card:
             print('select mode used',player.uses,"remaining")
             return False
         return True
-        # remove_index = -1
-        # for i,card in enumerate(player.hand):
-        #     if card.card == self:
-        #         remove_index = i
-        # if remove_index != -1: 
-        #     player.discard_pile.append(player.hand.pop(remove_index))
