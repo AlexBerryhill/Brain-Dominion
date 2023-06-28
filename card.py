@@ -1,5 +1,6 @@
 import pygame
 from single_card import Single_card
+from player import Player
 GRAY = (200, 200, 200)
 CARD_WIDTH = 100
 CARD_HEIGHT = 150
@@ -50,11 +51,18 @@ class Card:
         else:
             surface.blit(self.image, self.rect)
 
-    def play(self,player):
-        print(f"You ({player}) have {player.actions} action, {player.buys} buy, and {player.treasure} treasure")
-        remove_index = -1
-        for i,card in enumerate(player.hand):
-            if card.card == self:
-                remove_index = i
-        if remove_index != -1: 
-            player.discard_pile.append(player.hand.pop(remove_index))
+    def play(self,player:Player,players,cards):
+        if player.select_mode and player.uses != 0:
+            player.uses -= 1
+            player.select_function(player,self,players,cards)
+            if player.uses == 0:
+                player.deactivate_selection_mode()
+            print('select mode used',player.uses,"remaining")
+            return False
+        return True
+        # remove_index = -1
+        # for i,card in enumerate(player.hand):
+        #     if card.card == self:
+        #         remove_index = i
+        # if remove_index != -1: 
+        #     player.discard_pile.append(player.hand.pop(remove_index))

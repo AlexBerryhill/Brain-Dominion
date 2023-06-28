@@ -1,10 +1,8 @@
 import pygame
 import random
-import json
-from card import Card
-from treasure_card import Treasure_card
-from kingdom_card import Kingdom_card
-from victory_card import Victory_card
+# import json
+# from card import Card
+from card_loading import load_cards,setup_game_cards
 from player import Player
 
 # https://www.ultraboardgames.com/dominion/gfx/<card_name>.jpg
@@ -121,45 +119,9 @@ def draw_gui(player):
     window.blit(buys_number, buys_number_pos)
     window.blit(treasure_number, treasure_number_pos)
 
-def load_cards():
-    '''Using the cards.json file, returns a list of all the cards in the dominion game as objects.'''
-    cards = []
-    with open('assets/cards.json') as file:
-        cards_file = json.load(file)
-        for card in cards_file['Dominion']:
-            if card['type'] == 'Treasure':
-                cards.append(Treasure_card(card['name'],card['cost'],card['worth'],card['id'],card['starting_amount']))
-            elif card['type'] == 'Victory':
-                cards.append(Victory_card(card['name'],card['cost'],card['victory_points'],card['id'],card['starting_amount']))
-            else:
-                cards.append(Kingdom_card(card['name'],card['cost'],card['description'],card['plus_actions'],card['plus_treasure'],card['plus_buys'],card['plus_cards'],card['is_attack'],card['is_reaction'],card['id'],card['special_action']))
-    return cards
 
 cards = load_cards()
-def setup_game_cards():
-    '''Pulls the cards from the card list needed for a game (all victory and treasure cards and 10 kingdom cards)
-    Returns a dictionary of card id's and the amount of that card there is at the start. 
-    '''
-    game_cards = cards[:7]
-    used_cards = [0]
-
-    #TEMPORARY CODE FOR DEBUGGING NEW KINGDOM CARD CODE
-    if DEBUG:
-        game_cards.append(cards[9])
-        used_cards.append(cards[9])
-
-    for _ in range(10 if DEBUG else 11):
-        card_i = 0
-        while card_i in used_cards:
-            card_i = random.randint(7,31) 
-        game_cards.append(cards[card_i])
-    
-    supply = {}
-    for card in game_cards:
-        supply[card.id] = card.starting_amount
-    return supply
-
-supply = setup_game_cards()
+supply = setup_game_cards(cards)
 num_players = 2
 players = [Player(cards) for _ in range(num_players)]
 
@@ -197,7 +159,7 @@ while running:
                             supply[card_id] -= 1
 
                 for card in current_player.hand:
-                    if card.rect.collidepoint(mouse_pos):
+                    if card.rect.collidepoint(mouse_pos) and card.card.type in current_player.valid_card_selection_types:
                         card.card.play(current_player, players, cards)
 
         # Change cursor and highlight cards on hover
@@ -212,7 +174,7 @@ while running:
 
             # Check if hovering over player's hand cards
             for card in current_player.hand:
-                if card.rect.collidepoint(mouse_pos):
+                if card.rect.collidepoint(mouse_pos) and card.card.type in current_player.valid_card_selection_types and (current_player.uses != 0 or not current_player.select_mode):
                     card.highlighted = True
                     pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
                     break
@@ -224,7 +186,8 @@ while running:
                 supply_y = CARD_MARGIN
                 for card_id in supply:
                     card = cards[card_id]
-                    if card.rect.collidepoint(mouse_pos):
+                    valid_card = current_player.buys > 0 and (card.cost <= current_player.treasure or card.cost <= current_player.feast_money) and card.type in current_player.valid_buy_types
+                    if card.rect.collidepoint(mouse_pos) and valid_card:
                         card.highlighted = True
                         pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
                         break
@@ -239,6 +202,8 @@ while running:
             if event.key == pygame.K_e:
                 current_player.end_turn()
                 current_player.start_turn()
+            if event.key == pygame.K_s:
+                current_player.deactivate_selection_mode()
 
     # Draw supply stacks with highlighting
     supply_x = CARD_MARGIN

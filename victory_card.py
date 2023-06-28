@@ -5,4 +5,5 @@ class Victory_card(Card):
         self.victory_points = victory_points
     
     def play(self,player,players,cards):
-        print("you can't play a victory card")
+        if super().play(player,players,cards):
+            print("you can't play a victory card")

@@ -5,5 +5,6 @@ class Treasure_card(Card):
         self.worth = worth
     
     def play(self,player,players,cards):
-        player.treasure += self.worth
-        super().play(player)
+        if super().play(player,players,cards):
+            player.treasure += self.worth
+            player.discard_card(self)

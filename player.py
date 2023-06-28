@@ -9,8 +9,13 @@ class Player:
         self.actions = 1
         self.treasure = 0
         self.feast_money = 0
+        self.select_mode = False
+        self.uses = 0
+        self.valid_card_selection_types = ["Treasure","Kingdom"]
+        self.valid_buy_types = ["Treasure","Kingdom","Victory"]
         self.initialize_deck(cards)
         self.draw_cards(5)  # Draw 5 cards at the start of the game
+
 
     def initialize_deck(self,cards):
         # Add starting cards to the deck
@@ -20,6 +25,7 @@ class Player:
 
     def draw_cards(self, num_cards):
         # Draw a specified number of cards from the deck
+        print("successfully drew cards")
         for _ in range(num_cards):
             if len(self.deck) == 0:
                 # If the deck is empty, shuffle the discard pile and add it to the deck
@@ -29,6 +35,16 @@ class Player:
             if len(self.deck) > 0:
                 card = self.deck.pop()
                 self.hand.append(card)
+    
+    def discard_card(self,target_card):
+        '''discards the card if found in the hand and returns the index. Returns -1 if not found.'''
+        remove_index = -1
+        for i,card in enumerate(self.hand):
+            if card.card == target_card:
+                remove_index = i
+        if remove_index != -1: 
+            self.discard_pile.append(self.hand.pop(remove_index))
+        return remove_index
     
     def print_hand(self):
         for card in self.hand:
@@ -43,12 +59,35 @@ class Player:
         self.hand = []
         self.draw_cards(5)
     
+    def activate_selection_mode(self,function,uses = -1,valid_card_types=["Treasure","Kingdom","Victory"]):
+        self.valid_card_selection_types =valid_card_types
+        self.uses = uses
+        self.select_function = function
+        self.select_mode = True
+    
+    def deactivate_selection_mode(self):
+        self.select_mode = False
+        self.valid_card_selection_types = ["Treasure","Kingdom"]
+
+    
+    def trash_card(self,target_card):
+        remove_i = -1
+        for i,card in enumerate(self.hand):
+            if card.card == target_card:
+                remove_i = i
+                break
+        if remove_i > -1:
+            self.hand.pop(remove_i)
+        else:
+            print("Error finding card to trash")
+
     def buy_card(self,card):
 
-        if self.feast_money >= card.cost:
+        if self.feast_money >= card.cost and card.cost > 0:
             self.discard_pile.append(Single_card(card))
             print("successfully bought",card)
             self.feast_money = 0
+            self.valid_buy_types = ["Kingdom","Treasure","Victory"]
             return
         if self.buys > 0 and self.treasure >= card.cost:
             self.buys -= 1
