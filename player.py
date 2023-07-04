@@ -1,11 +1,20 @@
 import random
-from single_card import Single_card
+from cards.single_card import Single_card
 class Player:
-    def __init__(self,cards,name):
-        self.deck = []
-        self.hand = []
-        self.name = name
-        self.discard_pile = []
+    def __init__(self,cards,name,basis:dict = None ):
+        if basis:
+            self.deck = self.initialize_ids(cards,basis['deck'])
+            self.hand = self.initialize_ids(cards,basis['hand'])
+            self.discard_pile = self.initialize_ids(cards,basis['discard_pile'])
+            self.name = basis['name']
+        else:
+            self.deck = []
+            self.hand = []
+            self.name = name
+            self.discard_pile = []
+            self.initialize_deck(cards)
+            self.draw_cards(5)  # Draw 5 cards at the start of the game
+
         self.buys = 1
         self.actions = 1
         self.treasure = 0
@@ -14,9 +23,20 @@ class Player:
         self.uses = 0
         self.valid_card_selection_types = ["Treasure","Kingdom"]
         self.valid_buy_types = ["Treasure","Kingdom","Victory"]
-        self.initialize_deck(cards)
-        self.draw_cards(5)  # Draw 5 cards at the start of the game
-
+    
+    def initialize_ids(self,cards,list):
+        return [Single_card(cards[id]) for id in list]
+    
+    def load_current_player_stats(self,stats):
+        self.buys = stats['buys']
+        self.treasure = stats['treasure']
+        self.actions = stats['actions']
+        self.uses = stats['uses']
+        self.feast_money = stats['feast_money']
+        self.select_mode = stats['select_mode']
+        self.valid_card_selection_types = stats['selection_types']
+        self.valid_buy_types = stats['buy_types']
+        
 
     def initialize_deck(self,cards):
         # Add starting cards to the deck
@@ -26,7 +46,6 @@ class Player:
 
     def draw_cards(self, num_cards):
         # Draw a specified number of cards from the deck
-        print("successfully drew cards")
         for _ in range(num_cards):
             if len(self.deck) == 0:
                 # If the deck is empty, shuffle the discard pile and add it to the deck
@@ -88,7 +107,6 @@ class Player:
 
         if self.feast_money >= card.cost and card.cost > 0:
             self.discard_pile.append(Single_card(card))
-            print("successfully bought",card)
             self.feast_money = 0
             self.valid_buy_types = ["Kingdom","Treasure","Victory"]
             return
@@ -96,7 +114,6 @@ class Player:
             self.buys -= 1
             self.treasure -= card.cost
             self.discard_pile.append(Single_card(card))
-            print("successfully bought",card)
             return
         if self.buys < 1:
             print("not enough buys")

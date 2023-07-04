@@ -1,5 +1,5 @@
 import pygame
-from single_card import Single_card
+from cards.single_card import Single_card
 from player import Player
 from constants import GRAY,CARD_HEIGHT,CARD_WIDTH
 class Card:

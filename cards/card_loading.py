@@ -1,6 +1,6 @@
-from treasure_card import Treasure_card
-from victory_card import Victory_card
-from kingdom_card import Kingdom_card
+from cards.treasure_card import Treasure_card
+from cards.victory_card import Victory_card
+from cards.kingdom_card import Kingdom_card
 import json
 import random
 from constants import DEBUG
@@ -42,3 +42,9 @@ def setup_game_cards(cards):
     for card in game_cards:
         supply[card.id] = card.starting_amount
     return supply
+
+def jsonify_card_list(card_list):
+    output = []
+    for card in card_list:
+        output.append(card.card.id)
+    return output

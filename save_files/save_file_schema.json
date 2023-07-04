@@ -1,0 +1,18 @@
+{
+    "supply":{},
+    "players":[
+        {
+            "hand":[],
+            "deck":[],
+            "discard_pile":[],
+            "name":1
+        }
+    ],
+    "current_player_index":0,
+    "current_player_stats":{
+        "buys":1,
+        "actions":1,
+        "treasure":0
+    }
+
+}

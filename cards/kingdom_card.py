@@ -1,6 +1,6 @@
-from card import Card
+from cards.card import Card
 from player import Player
-from single_card import Single_card
+from cards.single_card import Single_card
 class Kingdom_card(Card):
     def __init__(self, name, cost, description, plus_actions, plus_treasure, plus_buys, plus_cards, is_attack, is_reaction, id,special_action):
         super().__init__(name, cost, "Kingdom", id,10)
@@ -66,9 +66,6 @@ class Kingdom_card(Card):
                             player.activate_selection_mode(self.throne_room,1,["Kingdom"])
                         case 29:
                             self.attack(lambda other,cards:other.deck.insert(0,Single_card(cards[6])),player,players,cards)
-                            # for other in players:
-                            #     if other != player:
-                            #         other.deck.insert(0,Single_card(cards[6]))
                         case 31:
                             player.feast_money = 4
                         case _:
@@ -104,7 +101,7 @@ class Kingdom_card(Card):
 
     def remodel(self,player:Player,card:Card,players,cards):
         player.trash_card(card)
-        player.feast_money = card.worth + 2
+        player.feast_money = card.cost + 2
 
     def mine(self,player:Player,card,players,cards):
         if 0 <= card.id < 2:

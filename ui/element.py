@@ -1,5 +1,5 @@
 import pygame
-from constants import WINDOW_HEIGHT,WINDOW_WIDTH
+from constants import WINDOW_HEIGHT,WINDOW_WIDTH,FONT_PATH
 GUI_IMAGE_SIZE = (40, 40)
 SCROLL_IMAGE_SIZE = (40, 25)
 GUI_IMAGE_MARGIN = 20
@@ -9,7 +9,6 @@ GUI_NUMBER_FONT_COLOR = (255, 255, 255)
 LABEL_FONT_SIZE = 10
 LABEL_FONT_COLOR = (0, 0, 0)
 FONT_COLOR = (255, 255, 255)
-FONT_PATH = pygame.font.match_font("arial")
 IMAGE_PATHS = ['assets/gui_circle.png','assets/gui_scroll.png']
 class Element:
 
