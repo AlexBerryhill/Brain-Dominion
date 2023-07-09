@@ -18,6 +18,8 @@ class EventHandler:
             elif event.type == pygame.MOUSEMOTION:
                 self.handle_hover()
             elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    pygame.event.post(pygame.event.Event(pygame.QUIT))
                 if event.key == pygame.K_e:
                     self.manager.current_player.end_turn()
                     self.manager.next_player()
@@ -36,7 +38,7 @@ class EventHandler:
                     else:
                         card = self.manager.cards[int(zone[self.key_index])]
                         if self.is_valid_supply_card(card):
-                            self.draw_from_supply(str(zone[self.key_index]),card)
+                            self.draw_from_supply(int(zone[self.key_index]),card)
 
         return True
     

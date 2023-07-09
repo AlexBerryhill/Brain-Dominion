@@ -78,6 +78,9 @@ target/
 # Jupyter Notebook
 .ipynb_checkpoints
 
+# Save file
+save_file.json
+
 # IPython
 profile_default/
 ipython_config.py
