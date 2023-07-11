@@ -21,6 +21,9 @@ class UI:
     def draw_menu(self,options):
         header = pygame.font.Font(FONT_PATH,50).render("Dominion", True, BLACK)
         self.window.blit(header,(200,100))
+        self.draw_options(options)
+    
+    def draw_options(self,options):
         for option in options:
             option.draw(self.window)
 
@@ -48,8 +51,10 @@ class UI:
             if card.highlighted:
                 pygame.draw.rect(self.window, HIGHLIGHT_COLOR, card.rect, 3)
             card.draw(self.window, card_x, card_y)
+        
+        # Draw top of discard pile to represent the pile
         if len(current_player.discard_pile):
-            current_player.discard_pile[-1].draw(self.window, WINDOW_WIDTH - CARD_MARGIN - CARD_WIDTH,WINDOW_HEIGHT - CARD_MARGIN - CARD_HEIGHT * 2)
+            current_player.discard_pile[-1].draw(self.window, WINDOW_WIDTH - CARD_MARGIN - CARD_WIDTH,WINDOW_HEIGHT - CARD_MARGIN - CARD_HEIGHT * 2.5)
 
     def draw_gui(self):
         for element in self.gui_elements:

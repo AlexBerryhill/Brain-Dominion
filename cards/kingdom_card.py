@@ -44,18 +44,18 @@ class Kingdom_card(Card):
                         case 17:
                             amount = 7 - len(player.hand)
                             player.draw_cards(amount)
-                            player.activate_selection_mode(lambda player,card,players,cards:player.discard_card(card),valid_card_types=["Kingdom"])
+                            player.activate_selection_mode(lambda player,card,players,cards:player.discard_card(card),valid_selection_types=["Kingdom"])
                         case 19:
                             # for other in players:
                             #     if other != player and other.discard_card(cards[21]) == -1:
                             #         other.hand = other.hand[:3]
                             self.attack(self.militia,player,players,cards)
                         case 20:
-                            player.activate_selection_mode(self.mine,1,["Treasure"])
+                            player.activate_selection_mode(self.mine,1,valid_selection_types=["Treasure"])
                         case 21:
                             pass
                         case 22:
-                            player.activate_selection_mode(self.money_lender,1,["Treasure"])
+                            player.activate_selection_mode(self.money_lender,1,valid_selection_types=["Treasure"])
                         case 23:
                             player.activate_selection_mode(self.remodel,1)
                         case 25:
@@ -63,7 +63,7 @@ class Kingdom_card(Card):
                         case 26:
                             pass
                         case 27:
-                            player.activate_selection_mode(self.throne_room,1,["Kingdom"])
+                            player.activate_selection_mode(self.throne_room,1,valid_selection_types=["Kingdom"])
                         case 29:
                             self.attack(lambda other,cards:other.deck.insert(0,Single_card(cards[6])),player,players,cards)
                         case 31:

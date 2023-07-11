@@ -1,7 +1,10 @@
 import random
+import pygame
+from constants import SELECT_MODE
 from cards.single_card import Single_card
 class Player:
-    def __init__(self,cards,name,basis:dict = None ):
+    def __init__(self,cards,name,manager,basis:dict = None ):
+        self.manager = manager
         if basis:
             self.deck = self.initialize_ids(cards,basis['deck'])
             self.hand = self.initialize_ids(cards,basis['hand'])
@@ -79,17 +82,20 @@ class Player:
         self.discard_pile.extend(self.hand)
         self.hand = []
         self.draw_cards(5)
-        self.deactivate_selection_mode()
+        if self.select_mode:
+            self.deactivate_selection_mode()
     
-    def activate_selection_mode(self,function,uses = -1,valid_card_types=["Treasure","Kingdom","Victory"]):
-        self.valid_card_selection_types =valid_card_types
+    def activate_selection_mode(self,function,uses = -1,valid_selection_types=["Treasure","Kingdom","Victory"]):
+        self.valid_card_selection_types =valid_selection_types
         self.uses = uses
         self.select_function = function
         self.select_mode = True
+        pygame.event.post(pygame.event.Event(SELECT_MODE))
     
     def deactivate_selection_mode(self):
         self.select_mode = False
         self.valid_card_selection_types = ["Treasure","Kingdom"]
+        self.manager.game_options.pop()
 
     
     def trash_card(self,target_card):

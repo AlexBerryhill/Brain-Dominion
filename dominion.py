@@ -18,6 +18,7 @@ class Master:
             self.cards = load_cards()
             self.event_handler = EventHandler(self)
             self.load_game(self.save_slot)
+            self.game_options = [Option("End Turn",(WINDOW_WIDTH - 90,WINDOW_HEIGHT-30),15)]
             self.run_game()
             self.save_game()
         pygame.quit()
@@ -75,14 +76,14 @@ class Master:
     def load_game(self,save_slot):
         if self.file_data[save_slot]["empty"]:
             self.supply = setup_game_cards(self.cards)
-            self.players = [Player(self.cards,i+1) for i in range(NUM_PLAYERS)]
+            self.players = [Player(self.cards,i+1,self) for i in range(NUM_PLAYERS)]
 
             self.current_player_index = -1
             self.next_player()
         else:
             data = self.file_data[save_slot]
             self.supply = data['supply']
-            self.players = [Player(self.cards,player['name'],basis=player) for player in data['players']]
+            self.players = [Player(self.cards,player['name'],self,basis=player) for player in data['players']]
             self.current_player_index = data['current_player_index']
             self.current_player = self.players[self.current_player_index]
             self.current_player.load_current_player_stats(data['current_player_stats'])
@@ -117,7 +118,7 @@ class Master:
             self.ui.draw_background()
             if self.event_handler.handle_events() == False:
                 return
-            
+            self.ui.draw_options(self.game_options)
             self.ui.draw_cards()
             self.ui.draw_gui()
 

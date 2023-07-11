@@ -10,6 +10,7 @@ CARD_MARGIN = 10
 FONT_PATH = pygame.font.match_font("arial")
 MOVEMENT_KEYS = ( pygame.K_UP,pygame.K_DOWN,pygame.K_RIGHT,pygame.K_LEFT )
 SELECTION_KEYS = (pygame.K_SPACE,pygame.K_RETURN)
+SELECT_MODE = pygame.USEREVENT + 1
 DEBUG = True
 
 NUM_PLAYERS = 2

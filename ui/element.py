@@ -4,6 +4,7 @@ GUI_IMAGE_SIZE = (40, 40)
 SCROLL_IMAGE_SIZE = (40, 25)
 GUI_IMAGE_MARGIN = 20
 GUI_CORNER_OFFSET = 10
+EXTRA_OFFSET = 70
 GUI_NUMBER_FONT_SIZE = 24
 GUI_NUMBER_FONT_COLOR = (255, 255, 255)
 LABEL_FONT_SIZE = 10
@@ -61,7 +62,7 @@ class Element:
     def calc_positions(self,image):
         positions = {}
         positions["Actions"] = (WINDOW_WIDTH - GUI_CORNER_OFFSET - image.get_width(),
-                WINDOW_HEIGHT - GUI_CORNER_OFFSET - image.get_height())
+                WINDOW_HEIGHT - GUI_CORNER_OFFSET - EXTRA_OFFSET - image.get_height())
         positions["Buys"] = positions["Actions"][0],positions["Actions"][1] - image.get_height() - GUI_IMAGE_MARGIN
         positions["Treasure"] = positions["Actions"][0] - image.get_width() - GUI_IMAGE_MARGIN, positions["Actions"][1]
         positions["Player"] = positions["Actions"][0] - image.get_width() - GUI_IMAGE_MARGIN, positions["Actions"][1] - image.get_height() - GUI_IMAGE_MARGIN
