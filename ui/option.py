@@ -1,11 +1,11 @@
 import pygame
-from constants import WINDOW_WIDTH,FONT_PATH,BLACK,GRAY
+from constants import WINDOW_WIDTH,FONT_PATH,BLACK,LIGHT_GRAY
 class Option:
     def __init__(self,text,position,size=30):
         self.text = text
         self.position = position
         self.selected = False
-        self.label = pygame.font.Font(FONT_PATH,size).render(text, True, BLACK,GRAY)
+        self.label = pygame.font.Font(FONT_PATH,size).render(text, True, BLACK,LIGHT_GRAY)
         self.rect = pygame.Rect(position[0],position[1],self.label.get_width(),self.label.get_height())
         
     

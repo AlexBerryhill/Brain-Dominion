@@ -93,10 +93,12 @@ class EventHandler:
 
         if self.key_zone == 'hand' and  0 <= self.key_index < len(self.manager.current_player.hand):
             card = zone[self.key_index]
+            card.selected = True
             if self.is_valid_hand_card(card):
                 card.highlighted = True
         elif self.key_zone == 'supply' and 0 <= self.key_index < len(self.manager.supply.keys()):
             card = self.manager.cards[int(zone[self.key_index])]
+            card.selected = True
             if self.is_valid_supply_card(card):
                 card.highlighted = True
         elif self.key_zone == 'options' and 0 <= self.key_index < len(zone):
@@ -163,12 +165,15 @@ class EventHandler:
         # Reset highlights
         for card in self.manager.cards:
             card.highlighted = False
+            card.selected = False
         
         for card in self.manager.current_player.hand:
             card.highlighted = False
+            card.selected = False
         
         for card in self.manager.current_player.discard_pile:
             card.highlighted = False
+            card.selected = False
         
         for option in self.manager.game_options:
             option.selected = False

@@ -9,6 +9,7 @@ class Card:
         self.type = type
         self.id = id
         self.worth = 0
+        self.selected = False
     
         self.victory_points = 0
         self.starting_amount = starting_amount
@@ -45,8 +46,12 @@ class Card:
             enlarged_height = int(CARD_HEIGHT * 1.2)
             enlarged_rect = pygame.Rect(x - (enlarged_width - CARD_WIDTH) // 2, y - (enlarged_height - CARD_HEIGHT) // 2, enlarged_width, enlarged_height)
             surface.blit(self.big_image, enlarged_rect)
+            if self.selected:
+                pygame.draw.rect(surface,GRAY,enlarged_rect,width=4)
         else:
             surface.blit(self.image, self.rect)
+            if self.selected:
+                pygame.draw.rect(surface,GRAY,self.rect,width=4)
 
     def play(self,player:Player,players,cards):
         if player.select_mode and player.uses != 0:
