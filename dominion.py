@@ -19,9 +19,41 @@ class Master:
             self.event_handler = EventHandler(self)
             self.load_game(self.save_slot)
             self.game_options = [Option("End Turn",(WINDOW_WIDTH - 90,WINDOW_HEIGHT-30),15)]
-            self.run_game()
-            self.save_game()
+            if not self.run_game(): # If the game was quit, not finished, then save the game.
+                self.save_game()
+            else:
+                self.finish_game()
+
         pygame.quit()
+
+    def finish_game(self):
+        '''If the game is finished, display the winner and reset the save file'''
+        winner,scores = self.get_winner()
+        print(f"Player {winner + 1} won!")
+        print("Scores:")
+        for i,score in enumerate(scores):
+            print(f"Player {i + 1}: {score}")
+
+
+        self.file_data[self.save_slot] = {'empty':True}
+        with open('save_files.json','w') as file:
+            json.dump(self.file_data,file)
+    
+    def get_pile_score(self,pile):
+        return sum([card.card.victory_points for card in pile if card.card.type == "Victory"])
+    
+    def garden_score(self,player):
+        score = (len(player.deck)+len(player.hand)+len(player.discard_pile)) // 10
+        num_gardens = sum([sum([1 for card in pile if card.card.id == 15]) for pile in [player.deck,player.hand,player.discard_pile]])
+        # num_gardens = 0
+        # for pile in [player.deck,player.hand,player.discard_pile]:
+        #     num_gardens += sum([1 for card in pile if card.card.id == 15])
+        return score * num_gardens
+    
+    def get_winner(self):
+        scores = [sum(map(self.get_pile_score,[player.deck,player.hand,player.discard_pile])) + self.garden_score(player) for player in self.players]
+        return scores.index(max(scores)),scores
+
     
     def get_save_data(self):
         try:
@@ -82,7 +114,9 @@ class Master:
             self.next_player()
         else:
             data = self.file_data[save_slot]
-            self.supply = data['supply']
+            self.supply = {}
+            for key,value in data['supply'].items():
+                self.supply[int(key)] = value
             self.players = [Player(self.cards,player['name'],self,basis=player) for player in data['players']]
             self.current_player_index = data['current_player_index']
             self.current_player = self.players[self.current_player_index]
@@ -90,6 +124,9 @@ class Master:
 
 
     def next_player(self):
+        for card_id in self.supply.keys():
+            if self.supply[card_id] < 1 and self.cards[card_id].enabled:
+                self.cards[card_id].enabled = False
         if self.current_player_index == len(self.players) - 1:
             self.current_player_index = 0
         else:
@@ -97,6 +134,10 @@ class Master:
         self.current_player = self.players[self.current_player_index]
         self.current_player.start_turn()
         self.event_handler.reset()
+    
+    def is_over(self):
+        return len([x for x in self.cards[7:] if not x.enabled]) >= 3 or self.supply[5] == 0
+
         
     def run_menu_screen(self):
         '''Returns -1 if the player exited the program. Otherwise, returns the index of their choice.'''
@@ -117,10 +158,12 @@ class Master:
         while True:
             self.ui.draw_background()
             if self.event_handler.handle_events() == False:
-                return
+                return False
             self.ui.draw_options(self.game_options)
             self.ui.draw_cards()
             self.ui.draw_gui()
+            if self.is_over():
+                return True
 
             # Update the display
             pygame.display.flip()

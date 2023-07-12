@@ -14,6 +14,8 @@ class Kingdom_card(Card):
         self.special_action = special_action
     
     def play(self,player : Player,players,cards):
+        if self.id == 15:
+            return
         if super().play(player,players,cards):
             if player.actions > 0:
                 player.actions -= 1

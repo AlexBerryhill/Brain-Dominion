@@ -10,6 +10,7 @@ class Card:
         self.id = id
         self.worth = 0
         self.selected = False
+        self.enabled = True
     
         self.victory_points = 0
         self.starting_amount = starting_amount
@@ -39,6 +40,8 @@ class Card:
             return image
 
     def draw_stack(self, surface, x, y):
+        if not self.enabled:
+            return
         self.rect.topleft = (x, y)
         if self.highlighted:
             # Increase the size of the card when hovered

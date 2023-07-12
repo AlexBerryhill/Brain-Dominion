@@ -1,5 +1,5 @@
 import pygame
-from constants import WINDOW_HEIGHT,WINDOW_WIDTH,CARD_HEIGHT,CARD_MARGIN,CARD_WIDTH,HIGHLIGHT_COLOR,FONT_PATH,BLACK
+from constants import WINDOW_HEIGHT,WINDOW_WIDTH,CARD_HEIGHT,CARD_MARGIN,CARD_WIDTH,FONT_PATH,BLACK
 from ui.element import Element
 from ui.option import Option
 
@@ -35,9 +35,9 @@ class UI:
         ran_over = []
         for i, card_id in enumerate(self.manager.supply):
                 
-            card = self.manager.cards[int(card_id)]
-            if card.highlighted:
-                pygame.draw.rect(self.window, HIGHLIGHT_COLOR, card.rect, 3)
+            card = self.manager.cards[card_id]
+            # if card.highlighted:
+            #     pygame.draw.rect(self.window, HIGHLIGHT_COLOR, card.rect, 3)
             card.draw_stack(self.window, supply_x, supply_y)
             supply_x += CARD_WIDTH + CARD_MARGIN
             if supply_x + CARD_WIDTH > WINDOW_WIDTH:
@@ -48,8 +48,8 @@ class UI:
         for i, card in enumerate(current_player.hand):
             card_x = CARD_MARGIN + (CARD_WIDTH + CARD_MARGIN) * i
             card_y = WINDOW_HEIGHT - CARD_MARGIN - CARD_HEIGHT
-            if card.highlighted:
-                pygame.draw.rect(self.window, HIGHLIGHT_COLOR, card.rect, 3)
+            # if card.highlighted:
+            #     pygame.draw.rect(self.window, HIGHLIGHT_COLOR, card.rect, 3)
             card.draw(self.window, card_x, card_y)
         
         # Draw top of discard pile to represent the pile

@@ -42,7 +42,7 @@ class EventHandler:
                         self.choose_option(zone[self.key_index].text)
 
                     else:
-                        card = self.manager.cards[int(zone[self.key_index])]
+                        card = self.manager.cards[zone[self.key_index]]
                         if self.is_valid_supply_card(card):
                             self.draw_from_supply(zone[self.key_index],card)
 
@@ -97,7 +97,7 @@ class EventHandler:
             if self.is_valid_hand_card(card):
                 card.highlighted = True
         elif self.key_zone == 'supply' and 0 <= self.key_index < len(self.manager.supply.keys()):
-            card = self.manager.cards[int(zone[self.key_index])]
+            card = self.manager.cards[zone[self.key_index]]
             card.selected = True
             if self.is_valid_supply_card(card):
                 card.highlighted = True
@@ -128,7 +128,7 @@ class EventHandler:
             mouse_pos = pygame.mouse.get_pos()
             # Check if the player clicked on a supply stack
             for card_id in self.manager.supply.keys():
-                card = self.manager.cards[int(card_id)]
+                card = self.manager.cards[card_id]
                 if card.rect.collidepoint(mouse_pos):
                     self.draw_from_supply(card_id,card)
 
@@ -153,7 +153,7 @@ class EventHandler:
        self.key_index = 0
     
     def draw_from_supply(self,card_id,card):
-        if self.manager.supply[card_id] > 0:
+        if self.manager.cards[card_id].enabled:
             self.manager.current_player.buy_card(card)
             self.manager.supply[card_id] -= 1
     
@@ -201,7 +201,7 @@ class EventHandler:
         # supply_x = CARD_MARGIN
         # supply_y = CARD_MARGIN
         for card_id in self.manager.supply:
-            card = self.manager.cards[int(card_id)]
+            card = self.manager.cards[card_id]
             if card.rect.collidepoint(mouse_pos) and self.is_valid_supply_card(card):
                 card.highlighted = True
                 pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
